@@ -97,10 +97,14 @@
           text-decoration: none !important;
         }
 
-        > li > a {
+        .toc__item--active > a {
           color: var(--global-link-color);
           font-weight: 700;
           border-left-color: #ff4fa3;
+        }
+
+        > li > a {
+          font-weight: 500;
         }
 
         li ul > li a {

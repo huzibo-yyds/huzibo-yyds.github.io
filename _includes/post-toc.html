@@ -9,4 +9,61 @@
     </ul>
   </nav>
 </aside>
+<script>
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll(".post-toc-sidebar .toc__menu a"));
+    if (!links.length) return;
+
+    var sections = links.map(function (link) {
+      var id = decodeURIComponent(link.getAttribute("href").slice(1));
+      return {
+        link: link,
+        item: link.closest(".toc__item"),
+        heading: document.getElementById(id)
+      };
+    }).filter(function (entry) {
+      return entry.heading;
+    });
+
+    if (!sections.length) return;
+
+    var ticking = false;
+
+    function setActive(entry) {
+      sections.forEach(function (section) {
+        section.item.classList.toggle("toc__item--active", section === entry);
+        if (section === entry) {
+          section.link.setAttribute("aria-current", "true");
+        } else {
+          section.link.removeAttribute("aria-current");
+        }
+      });
+    }
+
+    function updateActiveSection() {
+      var offset = 120;
+      var active = sections[0];
+
+      sections.forEach(function (section) {
+        if (section.heading.getBoundingClientRect().top <= offset) {
+          active = section;
+        }
+      });
+
+      setActive(active);
+      ticking = false;
+    }
+
+    function requestUpdate() {
+      if (!ticking) {
+        window.requestAnimationFrame(updateActiveSection);
+        ticking = true;
+      }
+    }
+
+    updateActiveSection();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+  })();
+</script>
 {% endif %}
