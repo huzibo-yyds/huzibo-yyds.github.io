@@ -7,69 +7,92 @@ redirect_from:
   - /about.html
 ---
 
+<div class="home-intro" markdown="1">
+<p class="home-kicker">北京邮电大学 · 集成电路科学与工程</p>
+
 我是呼子博，目前是北京邮电大学集成电路科学与工程硕士研究生，预计 2027 年 6 月毕业。本科毕业于北京科技大学计算机科学与技术专业。我的研究兴趣集中在数字 EDA、高层次综合（HLS）、FPGA 加速，以及面向硬件设计流程的机器学习方法。
 
-[下载中文简历](/files/hu-zibo-cv-cn-202512.pdf)
+<div class="home-actions">
+<a class="btn" href="/files/hu-zibo-cv-cn-202512.pdf">下载中文简历</a>
+<a class="btn" href="/posts/2026/05/tvm-custom-operator-layernorm/">阅读最新文章</a>
+</div>
+</div>
 
-研究方向
-======
-- 面向 HLS 的时序、性能与资源预估
-- EDA 编译器中间表示、图建模与静态时序分析数据构建
-- GNN / Transformer 在硬件设计分析任务中的应用
-- FPGA 上的深度强化学习与硬件加速系统实现
+## 研究方向
 
-最新文章
-======
-- [从模型导入到自定义算子：TVM 自定义 LayerNorm 全流程](/posts/2026/05/tvm-custom-operator-layernorm/)
+<div class="home-card-grid" markdown="1">
+<section class="home-card" markdown="1">
+**HLS 与 EDA 编译**
 
-教育背景
-======
-**北京邮电大学，集成电路科学与工程，硕士（推免）**<br>
+关注 HLS 编译流程中的时序、性能与资源预估，以及编译器 IR、图建模和静态时序分析数据构建。
+</section>
+
+<section class="home-card" markdown="1">
+**机器学习辅助硬件设计**
+
+探索 GNN / Transformer 等模型在硬件设计分析、粗粒度时序预测和设计空间理解中的应用。
+</section>
+
+<section class="home-card" markdown="1">
+**FPGA 加速系统**
+
+参与基于 FPGA 的强化学习算法加速、ARM-FPGA 协同系统和 HLS 硬件验证相关项目。
+</section>
+</div>
+
+## 近期动态
+
+<div class="home-timeline" markdown="1">
+<div class="home-timeline-item" markdown="1">
+<span>2026.05</span>
+
+发布博客：[从模型导入到自定义算子：TVM 自定义 LayerNorm 全流程](/posts/2026/05/tvm-custom-operator-layernorm/)
+</div>
+
+<div class="home-timeline-item" markdown="1">
+<span>2024.09 - 2025.07</span>
+
+参与“面向高层次综合 HLS 的粗粒度时序预估”科研项目，相关成果以第一作者投稿 ASP-DAC。
+</div>
+
+<div class="home-timeline-item" markdown="1">
+<span>2023.11 - 2024.05</span>
+
+在 AMD 研究实习，参与 Vitis HLS 工程中的 Multi-port Channel RTL 可行性检测和后端优化工作。
+</div>
+</div>
+
+## 教育经历
+
+<div class="home-education" markdown="1">
+<div markdown="1">
+**北京邮电大学**<br>
+集成电路科学与工程，硕士（推免）<br>
 2024.09 - 2027.06
 
-- GPA top 10%，成绩 90.8
-- 主修课程包括数字 EDA、高级机器学习、人工智能芯片、片上集成系统分析与设计、数字超大规模集成电路分析与设计等
-- 获学业一等奖学金 x2、小米奖学金、优秀研究生、优秀党员
+GPA top 10%，获学业一等奖学金、小米奖学金、优秀研究生、优秀党员等荣誉。
+</div>
 
-**北京科技大学，计算机科学与技术，本科**<br>
+<div markdown="1">
+**北京科技大学**<br>
+计算机科学与技术，本科<br>
 2020.09 - 2024.06
 
-- GPA 3.62/4.0，top 25%，成绩 89.305
-- 主修课程包括数据结构、操作系统、计算机网络、数据库原理、编译原理、软件工程、计算机组成原理、数字逻辑等
-- 获北京市优秀毕业生、优秀学生干部、优秀三好学生、党校优秀学员、国家励志奖学金 x3
+GPA 3.62/4.0，获北京市优秀毕业生、国家励志奖学金等荣誉。
+</div>
+</div>
 
-科研与项目
-======
-**面向高层次综合 HLS 的粗粒度时序预估**<br>
-2024.09 - 2025.07
+## 技术栈
 
-- 围绕 HLS 工具输出的时序收敛问题，构建从 HLS 中间表示到后端静态时序分析结果的学习式预估流程
-- 参与设计并实现 IR 图构建、STA 标签生成、GNN 与 Transformer 融合模型等核心模块
-- 相关成果以第一作者投稿 ASP-DAC
-
-**AMD，研究实习生**<br>
-2023.11 - 2024.05
-
-- 参与 Vitis HLS 大型 C++ 工程开发，面向 Multi-port Channel 通信场景设计并验证基于静态图分析的 RTL 可行性检测机制
-- 处理后端数据一致性问题，包括修复 Dirty Write 相关问题并优化 GUI View 可视化流程
-- 参与多种优化策略的调研、实现与测试，包括约束插入和 Multiplier Core 的资源/性能优化
-
-**基于 FPGA 的多智能体强化学习算法硬件加速设计与实现**<br>
-2022.11 - 2023.11
-
-- 基于 DQN 设计面向机器人路径规划任务的 FPGA 加速方案，并与 ARM 处理器通过 AXI 总线完成系统集成
-- 使用 HLS 完成核心模块实现、仿真与硬件验证
-- 项目获北京市级大学生创新创业训练计划支持
-
-**秦冢果树守护精灵**<br>
-2021.11 - 2022.11
-
-- 面向果树种植场景，参与基于传感器、嵌入式系统与数据分析的智能化解决方案设计
-- 项目获“互联网+”北京市级三等奖、北京市一等奖等荣誉
-
-技能
-======
-- 编程语言：C/C++、Python、Java、Verilog
-- 方向能力：数据结构与算法、机器学习、数字 IC / EDA、FPGA 与 HLS
-- 工具环境：VS Code、Linux、Shell、硬件仿真与调试工具
-- 英语能力：CET-4、CET-6
+<div class="home-tags">
+  <span>C/C++</span>
+  <span>Python</span>
+  <span>Verilog</span>
+  <span>Java</span>
+  <span>TVM / Relay</span>
+  <span>HLS</span>
+  <span>FPGA</span>
+  <span>Digital EDA</span>
+  <span>Machine Learning</span>
+  <span>Linux / Shell</span>
+</div>
