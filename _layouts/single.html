@@ -14,8 +14,12 @@ layout: default
   {% endunless %}
 {% endif %}
 
-<div id="main" role="main">
+<div id="main" role="main"{% if page.collection == 'posts' %} class="post-main"{% elsif page.toc %} class="has-toc"{% endif %}>
   {% include sidebar.html %}
+
+  {% if page.toc %}
+    {% include toc title=page.toc_label icon=page.toc_icon %}
+  {% endif %}
 
   <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
     {% if page.title %}<meta itemprop="headline" content="{{ page.title | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
