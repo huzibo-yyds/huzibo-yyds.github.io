@@ -4,5 +4,8 @@ main:
   - title: "主页"
     url: /
 
+  - title: "博客"
+    url: /year-archive/
+
   - title: "简历"
     url: /cv/

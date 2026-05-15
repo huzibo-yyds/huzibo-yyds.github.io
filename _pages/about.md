@@ -18,6 +18,10 @@ redirect_from:
 - GNN / Transformer 在硬件设计分析任务中的应用
 - FPGA 上的深度强化学习与硬件加速系统实现
 
+最新文章
+======
+- [从模型导入到自定义算子：TVM 自定义 LayerNorm 全流程](/posts/2026/05/tvm-custom-operator-layernorm/)
+
 教育背景
 ======
 **北京邮电大学，集成电路科学与工程，硕士（推免）**<br>
