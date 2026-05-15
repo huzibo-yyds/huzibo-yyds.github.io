@@ -1,64 +1,73 @@
 ---
 layout: archive
-title: "CV"
+title: "简历"
 permalink: /cv/
 author_profile: true
 redirect_from:
   - /resume
 ---
 
-{% include base_path %}
+[下载 PDF 版本](/files/hu-zibo-cv-cn-202512.pdf)
 
-Education
+基本信息
 ======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
-* B.S. in GitHub, GitHub University, 2012
+- 姓名：呼子博
+- 邮箱：huzibo@bupt.edu.cn
+- 出生年月：2002.01
+- 政治面貌：中共党员
 
-Work experience
+教育背景
 ======
-* Spring 2024: Academic Pages Collaborator
-  * GitHub University
-  * Duties includes: Updates and improvements to template
-  * Supervisor: The Users
+**北京邮电大学，集成电路科学与工程，硕士（推免）**<br>
+2024.09 - 2027.06
 
-* Fall 2015: Research Assistant
-  * GitHub University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
+- 主修课程：数字 EDA、高级机器学习、人工智能芯片、片上集成系统分析与设计、数字超大规模集成电路分析与设计等
+- 科研方向：数字 EDA、HLS、FPGA 加速
+- 奖励荣誉：学业一等奖学金 x2、小米奖学金、优秀研究生、优秀党员
+- 成绩排名：GPA top 10%，成绩 90.8
 
-* Summer 2015: Research Assistant
-  * GitHub University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
-  
-Skills
-======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
+**北京科技大学，计算机科学与技术，本科**<br>
+2020.09 - 2024.06
 
-Publications
+- 主修课程：数据结构、操作系统、计算机网络、数据库原理、编译原理、软件工程、计算机组成原理、数字逻辑等
+- 奖励荣誉：北京市优秀毕业生、优秀学生干部、优秀三好学生、党校优秀学员、国家励志奖学金 x3
+- 成绩排名：GPA 3.62/4.0，top 25%，成绩 89.305
+
+实习经历
 ======
-  <ul>{% for post in site.publications reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Talks
+**超威半导体 AMD，研究实习生**<br>
+2023.11 - 2024.05
+
+- 在 Vitis HLS 大型 C++ 工程中，针对复杂多端口通道（Multi-port Channel）通信场景，设计并实现基于静态图分析的 RTL 可行性检测机制
+- 处理并优化后端数据一致性问题，包括修复 Dirty Write 相关问题以及 GUI View 可视化流程
+- 参与多种优化策略的调研、实现与测试，包括约束插入和 Multiplier Core 的 LUT/DSP 资源与性能优化
+
+项目经历
 ======
-  <ul>{% for post in site.talks reversed %}
-    {% include archive-single-talk-cv.html  %}
-  {% endfor %}</ul>
-  
-Teaching
+**面向高层次综合 HLS 的粗粒度时序预估，科研项目**<br>
+2024.09 - 2025.07
+
+- 面向 HLS 工具时序收敛周期长的问题，构建从 HLS 中间表示到静态时序分析结果的预估流程
+- 参与 HLS 编译器 IR 图构建、STA 标签生成、GNN 与 Transformer 融合模型实现等工作
+- 相关成果以第一作者投稿 ASP-DAC
+
+**基于 FPGA 的多智能体强化学习算法硬件加速设计与实现，本科生创新创业项目**<br>
+2022.11 - 2023.11
+
+- 设计并实现基于 DQN 的 FPGA 路径规划加速方案，用于机器人移动决策
+- 通过 AXI 总线完成 ARM 处理器与 FPGA 加速模块间的数据交互
+- 通过 HLS 完成核心模块实现、仿真与硬件验证
+
+**秦冢果树守护精灵，勤敏轩实验室项目**<br>
+2021.11 - 2022.11
+
+- 围绕果树种植场景，参与智能化监测与辅助决策系统设计
+- 结合传感器、嵌入式系统与数据分析技术，完成原型系统开发与验证
+- 项目获“互联网+”北京市级三等奖、北京市一等奖等荣誉
+
+技能 / 优势
 ======
-  <ul>{% for post in site.teaching reversed %}
-    {% include archive-single-cv.html %}
-  {% endfor %}</ul>
-  
-Service and leadership
-======
-* Currently signed in to 43 different slack teams
+- 编程语言：C/C++、Python、Java、Verilog
+- 工具环境：VS Code、Linux、Shell
+- 研究与工程能力：数据结构与算法、机器学习、数字 IC / EDA、FPGA、HLS
+- 英语能力：CET-4、CET-6
