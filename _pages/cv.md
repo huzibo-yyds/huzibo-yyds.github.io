@@ -7,8 +7,6 @@ redirect_from:
   - /resume
 ---
 
-{% include toc title="页面大纲" %}
-
 [下载 PDF 版本](/files/hu-zibo-cv-cn-202512.pdf)
 
 基本信息

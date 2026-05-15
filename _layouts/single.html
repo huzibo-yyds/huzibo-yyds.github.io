@@ -14,11 +14,11 @@ layout: default
   {% endunless %}
 {% endif %}
 
-<div id="main" role="main"{% if page.collection == 'posts' %} class="post-main"{% elsif page.toc %} class="has-toc"{% endif %}>
+<div id="main" role="main"{% if page.collection == 'posts' %} class="post-main"{% endif %}>
   {% include sidebar.html %}
 
-  {% if page.toc %}
-    {% include toc title=page.toc_label icon=page.toc_icon %}
+  {% if page.collection == 'posts' %}
+    {% include post-toc.html %}
   {% endif %}
 
   <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
