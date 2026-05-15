@@ -10,6 +10,8 @@ tags:
   - Compiler
 ---
 
+{% include toc title="本文大纲" %}
+
 最近在 TVM 0.19.0 上做了一个小实验：给 Relay 增加一个真正参与编译链路的自定义算子 `custom.layer_norm`，再写一个 pass，把 ViT-Tiny ONNX 模型里的 LayerNorm 子图替换成这个自定义算子。最后分别跑 baseline 和 custom 两条路径，确认输出一致。
 
 这篇文章把这个过程整理成一条完整路线：先从 TVM 如何加载模型说起，再进入 Relay 自定义算子的注册、pass 替换、编译、运行和结果验证。

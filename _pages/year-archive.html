@@ -8,6 +8,15 @@ redirect_from:
 ---
 
 {% include base_path %}
+
+<nav class="toc" markdown="1">
+  <header><h4 class="nav__title"><i class="fa fa-file-text"></i> 页面大纲</h4></header>
+  <ul class="toc__menu">
+    <li><a href="#2026">2026</a></li>
+    <li><a href="/posts/2026/05/tvm-custom-operator-layernorm/">TVM 自定义算子全流程</a></li>
+  </ul>
+</nav>
+
 {% capture written_year %}'None'{% endcapture %}
 {% for post in site.posts %}
   {% capture year %}{{ post.date | date: '%Y' }}{% endcapture %}
