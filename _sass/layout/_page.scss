@@ -117,6 +117,19 @@
           margin-left: 0.9rem;
           border-left-color: #7aa6c2;
         }
+
+        .toc__item--level-3 > a {
+          margin-left: 0.9rem;
+          color: var(--global-text-color);
+          font-weight: 400;
+          border-left-color: #2596be;
+        }
+
+        .toc__item--level-3.toc__item--active > a {
+          color: var(--global-link-color);
+          font-weight: 700;
+          border-left-color: #ff4fa3;
+        }
       }
     }
   }
