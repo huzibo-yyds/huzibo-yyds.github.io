@@ -1,0 +1,44 @@
+{% include base_path %}
+{% include group-by-array collection=include.collection field=include.field %}
+
+{% assign taxonomy_label = include.label | default: "条目" %}
+{% assign taxonomy_empty = include.empty_message | default: "暂无内容。" %}
+
+{% if group_names.size > 0 %}
+  <div class="taxonomy-summary">
+    <p class="taxonomy-summary__meta">
+      共 {{ group_names | size }} 个{{ taxonomy_label }}，{{ include.collection | size }} 篇博客
+    </p>
+    <nav class="taxonomy-cloud" aria-label="{{ taxonomy_label }}索引">
+      {% for item in group_names %}
+        {% assign posts = group_items[forloop.index0] %}
+        <a class="taxonomy-chip" href="#{{ item | slugify }}">
+          <span class="taxonomy-chip__name">{{ item }}</span>
+          <span class="taxonomy-chip__count">{{ posts | size }}</span>
+        </a>
+      {% endfor %}
+    </nav>
+  </div>
+
+  {% for item in group_names %}
+    {% assign posts = group_items[forloop.index0] %}
+    <section class="taxonomy-section" id="{{ item | slugify }}">
+      <h2 class="archive__subtitle taxonomy-section__title">
+        <span>{{ item }}</span>
+        <span class="taxonomy-section__count">{{ posts | size }} 篇</span>
+      </h2>
+      <ol class="taxonomy-post-list">
+        {% for post in posts %}
+          <li class="taxonomy-post-list__item">
+            <time class="taxonomy-post-list__date" datetime="{{ post.date | date_to_xmlschema }}">
+              {{ post.date | date: "%Y-%m-%d" }}
+            </time>
+            <a class="taxonomy-post-list__title" href="{{ base_path }}{{ post.url }}">{{ post.title }}</a>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+  {% endfor %}
+{% else %}
+  <p class="taxonomy-summary__meta">{{ taxonomy_empty }}</p>
+{% endif %}
