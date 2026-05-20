@@ -1,0 +1,37 @@
+{% include base_path %}
+{% include group-by-array collection=include.collection field=include.field %}
+
+{% assign taxonomy_label = include.label | default: "标签" %}
+{% assign taxonomy_empty = include.empty_message | default: "暂无内容。" %}
+{% assign detail_path = include.detail_path | default: "/tag/" %}
+{% assign query_name = include.query_name | default: "tag" %}
+
+{% if group_names.size > 0 %}
+  <div class="taxonomy-summary taxonomy-summary--center">
+    <p class="taxonomy-summary__meta">
+      共 {{ group_names | size }} 个{{ taxonomy_label }}，{{ include.collection | size }} 篇博客
+    </p>
+    <nav class="taxonomy-cloud taxonomy-cloud--weighted" aria-label="{{ taxonomy_label }}索引">
+      {% for item in group_names %}
+        {% assign posts = group_items[forloop.index0] %}
+        {% assign post_count = posts | size %}
+        {% assign size_class = "taxonomy-chip--size-1" %}
+        {% if post_count >= 10 %}
+          {% assign size_class = "taxonomy-chip--size-5" %}
+        {% elsif post_count >= 6 %}
+          {% assign size_class = "taxonomy-chip--size-4" %}
+        {% elsif post_count >= 3 %}
+          {% assign size_class = "taxonomy-chip--size-3" %}
+        {% elsif post_count >= 2 %}
+          {% assign size_class = "taxonomy-chip--size-2" %}
+        {% endif %}
+        <a class="taxonomy-chip {{ size_class }}" href="{{ base_path }}{{ detail_path }}?{{ query_name }}={{ item | slugify }}">
+          <span class="taxonomy-chip__name">{{ item }}</span>
+          <sup class="taxonomy-chip__count">{{ post_count }}</sup>
+        </a>
+      {% endfor %}
+    </nav>
+  </div>
+{% else %}
+  <p class="taxonomy-summary__meta">{{ taxonomy_empty }}</p>
+{% endif %}

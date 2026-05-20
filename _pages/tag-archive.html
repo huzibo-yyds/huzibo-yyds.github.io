@@ -1,8 +1,9 @@
 ---
 layout: archive
 permalink: /tags/
-title: "标签"
+title: "所有标签"
 author_profile: true
+archive_class: taxonomy-index-page
 ---
 
-{% include taxonomy-archive.html collection=site.posts field="tags" label="标签" empty_message="还没有带标签的博客。" %}
+{% include taxonomy-cloud.html collection=site.posts field="tags" label="标签" detail_path="/tag/" query_name="tag" empty_message="还没有带标签的博客。" %}

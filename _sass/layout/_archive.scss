@@ -89,12 +89,38 @@
    Taxonomy archive
    ========================================================================== */
 
+.archive.taxonomy-index-page,
+.archive.taxonomy-detail-page {
+  .page__title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65em;
+    margin-bottom: 1.2em;
+    color: var(--global-code-text-color);
+    font-size: $type-size-2;
+    text-align: center;
+
+    &::before,
+    &::after {
+      content: "";
+      display: block;
+      width: 2.5em;
+      border-top: 2px solid var(--global-code-text-color);
+    }
+  }
+}
+
 .taxonomy-summary {
   margin: 0 0 2em;
 }
 
+.taxonomy-summary--center {
+  text-align: center;
+}
+
 .taxonomy-summary__meta {
-  margin: 0 0 1em;
+  margin: 0 0 1.25em;
   color: var(--global-text-color-light);
   font-size: $type-size-6;
 }
@@ -102,87 +128,223 @@
 .taxonomy-cloud {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5em;
+  gap: 0.7em 1.15em;
   margin-bottom: 1.5em;
+}
+
+.taxonomy-cloud--weighted {
+  justify-content: center;
+  max-width: 46em;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .taxonomy-chip {
   display: inline-flex;
-  align-items: center;
-  gap: 0.45em;
-  min-height: 2.25em;
-  padding: 0.35em 0.7em;
-  border: 1px solid var(--global-border-color);
-  border-radius: $border-radius;
-  background-color: var(--global-bg-color);
-  color: var(--global-text-color);
-  font-size: $type-size-6;
+  align-items: baseline;
+  gap: 0.2em;
+  padding: 0.05em 0.1em;
+  color: var(--global-code-text-color);
   line-height: 1.2;
   text-decoration: none !important;
 
   &:hover {
-    border-color: var(--global-link-color);
     color: var(--global-link-color);
   }
 }
 
 .taxonomy-chip__count {
-  min-width: 1.5em;
-  padding: 0.1em 0.45em;
-  border-radius: 999px;
-  background-color: var(--global-code-background-color);
+  top: -0.35em;
   color: var(--global-text-color-light);
-  font-size: 0.85em;
+  font-size: 0.6em;
+  line-height: 1;
+}
+
+.taxonomy-chip--size-1 {
+  font-size: $type-size-5;
+}
+
+.taxonomy-chip--size-2 {
+  font-size: $type-size-4;
+}
+
+.taxonomy-chip--size-3 {
+  font-size: $type-size-3;
+}
+
+.taxonomy-chip--size-4,
+.taxonomy-chip--size-5 {
+  font-size: $type-size-2;
+}
+
+.taxonomy-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1em;
+}
+
+.taxonomy-card {
+  position: relative;
+  min-height: 12em;
+  padding: 1.35em 1.5em 2.2em;
+  border: 1px solid var(--global-border-color);
+  border-radius: $border-radius;
+  background-color: var(--global-bg-color);
+  box-shadow: 0 1px 4px rgba(#000, 0.08);
+}
+
+.taxonomy-card__title {
+  margin: 0 0 0.85em;
+  padding-bottom: 0.65em;
+  border-bottom: 1px solid var(--global-border-color);
+  color: var(--global-code-text-color);
+  font-size: $type-size-4;
   text-align: center;
+
+  a {
+    color: inherit;
+    text-decoration: none !important;
+  }
 }
 
-.taxonomy-section {
-  scroll-margin-top: 5em;
-}
-
-.taxonomy-section__title {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1em;
-}
-
-.taxonomy-section__count {
-  flex: 0 0 auto;
-  color: var(--global-text-color-light);
-  font-size: $type-size-6;
-  font-weight: normal;
-}
-
-.taxonomy-post-list {
-  margin: 0.75em 0 1.75em;
+.taxonomy-card__list {
+  margin: 0;
   padding: 0;
   list-style: none;
+
+  li {
+    position: relative;
+    margin-bottom: 0.55em;
+    padding-left: 1.05em;
+    font-size: $type-size-6;
+
+    &::before {
+      content: "\203A";
+      position: absolute;
+      left: 0;
+      color: var(--global-code-text-color);
+      font-weight: bold;
+    }
+  }
+
+  a {
+    color: var(--global-code-text-color);
+    text-decoration: none !important;
+
+    &:hover {
+      color: var(--global-link-color);
+    }
+  }
 }
 
-.taxonomy-post-list__item {
-  display: grid;
-  grid-template-columns: 6.5em minmax(0, 1fr);
-  gap: 0.75em;
-  padding: 0.45em 0;
-  border-bottom: 1px solid var(--global-border-color);
-}
-
-.taxonomy-post-list__date {
-  color: var(--global-text-color-light);
-  font-size: $type-size-7;
-  line-height: 1.6;
-}
-
-.taxonomy-post-list__title {
-  line-height: 1.5;
+.taxonomy-card__more {
+  position: absolute;
+  right: 1.3em;
+  bottom: 0.75em;
+  color: var(--global-code-text-color);
+  font-size: $type-size-4;
   text-decoration: none !important;
 }
 
+.taxonomy-detail__back {
+  margin-top: -0.5em;
+  text-align: center;
+  font-size: $type-size-6;
+}
+
+.taxonomy-detail__empty,
+.taxonomy-detail__section {
+  display: none;
+}
+
+.taxonomy-detail__empty.is-active,
+.taxonomy-detail__section.is-active {
+  display: block;
+}
+
+.no-js {
+  .taxonomy-detail__section {
+    display: block;
+  }
+}
+
+.taxonomy-detail__heading {
+  @extend .visually-hidden;
+}
+
+.taxonomy-timeline {
+  margin: 0;
+  padding: 0 0 0 1.75em;
+  list-style: none;
+}
+
+.taxonomy-timeline__year {
+  margin: 0 0 0.8em -1.75em;
+  color: var(--global-code-text-color);
+  font-size: $type-size-3;
+  font-weight: bold;
+}
+
+.taxonomy-timeline__item {
+  position: relative;
+  margin: 0;
+  padding: 0 0 1.15em 1.4em;
+  border-left: 2px solid var(--global-text-color-light);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0.45em;
+    left: -0.32em;
+    width: 0.55em;
+    height: 0.55em;
+    border-radius: 50%;
+    background-color: var(--global-text-color-light);
+  }
+}
+
+.taxonomy-timeline__title {
+  display: block;
+  color: var(--global-code-text-color);
+  font-size: $type-size-5;
+  line-height: 1.35;
+  text-decoration: none !important;
+
+  &:hover {
+    color: var(--global-link-color);
+  }
+}
+
+.taxonomy-timeline__date {
+  display: block;
+  margin-top: 0.2em;
+  color: var(--global-text-color-light);
+  font-size: $type-size-6;
+}
+
 @include breakpoint(max-width $small) {
-  .taxonomy-post-list__item {
+  .archive.taxonomy-index-page,
+  .archive.taxonomy-detail-page {
+    .page__title {
+      font-size: $type-size-3;
+
+      &::before,
+      &::after {
+        width: 1.5em;
+      }
+    }
+  }
+
+  .taxonomy-card-grid {
     grid-template-columns: 1fr;
-    gap: 0.1em;
+  }
+
+  .taxonomy-card {
+    min-height: 0;
+  }
+
+  .taxonomy-cloud {
+    gap: 0.55em 0.85em;
   }
 }
 

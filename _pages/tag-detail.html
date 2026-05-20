@@ -1,0 +1,76 @@
+---
+layout: archive
+permalink: /tag/
+title: "标签"
+author_profile: true
+archive_class: taxonomy-detail-page
+---
+
+{% include base_path %}
+{% include group-by-array collection=site.posts field="tags" %}
+
+<div class="taxonomy-detail" data-taxonomy-detail>
+  <p class="taxonomy-detail__back">
+    <a href="{{ base_path }}/tags/">返回所有标签</a>
+  </p>
+
+  <p class="taxonomy-detail__empty" data-taxonomy-empty>
+    没有找到这个标签。你可以返回所有标签重新选择。
+  </p>
+
+  {% for tag in group_names %}
+    {% assign posts = group_items[forloop.index0] %}
+    <section class="taxonomy-detail__section" data-taxonomy-slug="{{ tag | slugify }}" data-taxonomy-name="{{ tag }}">
+      <h2 class="taxonomy-detail__heading">{{ tag }}</h2>
+      <ol class="taxonomy-timeline">
+        {% capture written_year %}'None'{% endcapture %}
+        {% for post in posts %}
+          {% capture year %}{{ post.date | date: "%Y" }}{% endcapture %}
+          {% if year != written_year %}
+            <li class="taxonomy-timeline__year">{{ year }}</li>
+            {% capture written_year %}{{ year }}{% endcapture %}
+          {% endif %}
+          <li class="taxonomy-timeline__item">
+            <a class="taxonomy-timeline__title" href="{{ base_path }}{{ post.url }}">{{ post.title }}</a>
+            <time class="taxonomy-timeline__date" datetime="{{ post.date | date_to_xmlschema }}">
+              Published on {{ post.date | date: "%m-%d" }}
+            </time>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+  {% endfor %}
+</div>
+
+<script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var selected = (params.get("tag") || window.location.hash.replace(/^#/, "")).trim().toLowerCase();
+    var sections = Array.prototype.slice.call(document.querySelectorAll("[data-taxonomy-slug]"));
+    var empty = document.querySelector("[data-taxonomy-empty]");
+    var title = document.querySelector(".taxonomy-detail-page .page__title");
+    var active = null;
+
+    sections.forEach(function (section) {
+      if (section.getAttribute("data-taxonomy-slug") === selected) {
+        active = section;
+        section.classList.add("is-active");
+      } else {
+        section.classList.remove("is-active");
+      }
+    });
+
+    if (active) {
+      var name = active.getAttribute("data-taxonomy-name");
+      if (title) {
+        title.textContent = name;
+      }
+      document.title = name + " " + document.title.replace(/^标签\s*/, "");
+      if (empty) {
+        empty.classList.remove("is-active");
+      }
+    } else if (empty) {
+      empty.classList.add("is-active");
+    }
+  })();
+</script>

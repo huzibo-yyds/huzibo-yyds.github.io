@@ -1,0 +1,33 @@
+{% include base_path %}
+{% include group-by-array collection=include.collection field=include.field %}
+
+{% assign taxonomy_label = include.label | default: "分类" %}
+{% assign taxonomy_empty = include.empty_message | default: "暂无内容。" %}
+{% assign detail_path = include.detail_path | default: "/tag/" %}
+{% assign query_name = include.query_name | default: "tag" %}
+{% assign preview_limit = include.preview_limit | default: 5 %}
+
+{% if group_names.size > 0 %}
+  <div class="taxonomy-card-grid">
+    {% for item in group_names %}
+      {% assign posts = group_items[forloop.index0] %}
+      <section class="taxonomy-card" id="{{ item | slugify }}">
+        <h2 class="taxonomy-card__title">
+          <a href="{{ base_path }}{{ detail_path }}?{{ query_name }}={{ item | slugify }}">{{ item }}</a>
+        </h2>
+        <ol class="taxonomy-card__list">
+          {% for post in posts limit: preview_limit %}
+            <li>
+              <a href="{{ base_path }}{{ post.url }}">{{ post.title }}</a>
+            </li>
+          {% endfor %}
+        </ol>
+        <a class="taxonomy-card__more" href="{{ base_path }}{{ detail_path }}?{{ query_name }}={{ item | slugify }}" aria-label="查看 {{ item }} 下的全部文章">
+          &raquo;
+        </a>
+      </section>
+    {% endfor %}
+  </div>
+{% else %}
+  <p class="taxonomy-summary__meta">还没有{{ taxonomy_label }}内容。</p>
+{% endif %}

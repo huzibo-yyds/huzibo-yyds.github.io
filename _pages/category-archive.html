@@ -1,8 +1,9 @@
 ---
 layout: archive
 permalink: /categories/
-title: "分类"
+title: "所有分类"
 author_profile: true
+archive_class: taxonomy-index-page
 ---
 
-{% include taxonomy-archive.html collection=site.posts field="categories" label="分类" empty_message="还没有带分类的博客。" %}
+{% include taxonomy-card-grid.html collection=site.posts field="tags" label="分类" detail_path="/tag/" query_name="tag" preview_limit=5 empty_message="还没有带分类的博客。" %}
