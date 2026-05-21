@@ -1,0 +1,28 @@
+{% include base_path %}
+
+{% assign related_title = post.title | markdownify | strip_html | strip_newlines %}
+{% assign related_excerpt = post.excerpt | markdownify | strip_html | strip_newlines %}
+
+<article class="related-post">
+  <div class="related-post__meta">
+    {% if post.date %}
+      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%Y-%m-%d" }}</time>
+    {% endif %}
+    {% if post.read_time %}
+      <span><i class="fa fa-clock" aria-hidden="true"></i> {% include read-time.html %}</span>
+    {% endif %}
+  </div>
+  <h3 class="related-post__title">
+    <a href="{{ base_path }}{{ post.url }}">{{ related_title }}</a>
+  </h3>
+  {% if related_excerpt != "" %}
+    <p class="related-post__excerpt">{{ related_excerpt | truncate: 140 }}</p>
+  {% endif %}
+  {% if post.tags[0] %}
+    <div class="related-post__tags" aria-label="标签">
+      {% for tag in post.tags limit:3 %}
+        <span>{{ tag }}</span>
+      {% endfor %}
+    </div>
+  {% endif %}
+</article>

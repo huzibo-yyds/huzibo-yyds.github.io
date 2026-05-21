@@ -36,6 +36,26 @@ This file is the persistent project memory for future Codex pages. Read it at th
 
 ## Recent Change Log
 
+### 2026-05-21: Restyled related posts on blog pages
+
+Changed files:
+
+- `_layouts/single.html`: Replaces the old `site.related_posts` grid rendering with a related-posts section that first selects posts sharing tags with the current post, then falls back to Jekyll's default related posts if no tag overlap exists.
+- `_includes/related-post-card.html`: New dedicated related-post card include with date, read time, title, excerpt, and tags.
+- `_sass/layout/_page.scss`: Restyles the related-posts area so it aligns with the post content column and uses full-width responsive cards instead of the narrow archive grid item.
+- `docs/codex-handoff.md`: Records this change for future Codex sessions.
+
+Purpose:
+
+- Fix the visually awkward "你可能感兴趣的" block at the bottom of blog posts.
+- Make the recommendation behavior easier to explain and more intuitive by preferring shared tags.
+
+Validation:
+
+- Ran `/opt/homebrew/opt/ruby/bin/bundle exec jekyll build` successfully.
+- Verified the generated ResNet18 post uses `.related-post` markup, no longer uses the old `.grid__wrapper`, and recommends the LayerNorm post via shared tags.
+- Checked local `http://localhost:4000/posts/2026/05/tvm-relay-resnet18-beginner-guide/`; the related area width is aligned to the content column.
+
 ### 2026-05-20: Split tag index from tag detail pages
 
 Changed files:
