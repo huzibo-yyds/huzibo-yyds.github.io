@@ -24,8 +24,8 @@ layout: default
   <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
     {% if page.title %}<meta itemprop="headline" content="{{ page.title | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
     {% if page.excerpt %}<meta itemprop="description" content="{{ page.excerpt | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
-    {% if page.date %}<meta itemprop="datePublished" content="{{ page.date | date: "%B %d, %Y" }}">{% endif %}
-    {% if page.modified %}<meta itemprop="dateModified" content="{{ page.modified | date: "%B %d, %Y" }}">{% endif %}
+    {% if page.date %}<meta itemprop="datePublished" content="{{ page.date | date_to_xmlschema }}">{% endif %}
+    {% if page.modified %}<meta itemprop="dateModified" content="{{ page.modified | date_to_xmlschema }}">{% endif %}
 
     <div class="page__inner-wrap">
       {% unless page.header.overlay_color or page.header.overlay_image %}
@@ -34,11 +34,151 @@ layout: default
           {% if page.read_time %}
             <p class="page__meta"><i class="fa fa-clock" aria-hidden="true"></i> {% include read-time.html %}</p>
           {% endif %}
-        {% if page.modified %}
+        {% if page.collection == 'posts' and page.date %}
+          <p class="page__date page__date--post" data-post-timestamps data-repository="{{ site.repository }}" data-source-path="{{ page.path }}" data-branch="{{ site.github.source.branch | default: "master" }}">
+            <span>
+              <strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label | default: "Published:" }}</strong>
+              <time data-post-created datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d %H:%M" }}</time>
+            </span>
+            <span>
+              <strong><i class="fa fa-fw fa-clock" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].updated_label | default: "Updated:" }}</strong>
+              <time data-post-updated{% if page.modified %} datetime="{{ page.modified | date_to_xmlschema }}"{% endif %}>{% if page.modified %}{{ page.modified | date: "%Y-%m-%d %H:%M" }}{% else %}自动获取中{% endif %}</time>
+            </span>
+          </p>
+          <script>
+            (function () {
+              var container = document.currentScript.previousElementSibling;
+              if (!container || !container.matches("[data-post-timestamps]")) {
+                return;
+              }
+
+              var repository = container.getAttribute("data-repository");
+              var sourcePath = container.getAttribute("data-source-path");
+              var branch = container.getAttribute("data-branch") || "master";
+              var createdNode = container.querySelector("[data-post-created]");
+              var updatedNode = container.querySelector("[data-post-updated]");
+
+              if (!repository || !sourcePath || !createdNode || !updatedNode) {
+                return;
+              }
+
+              var cacheKey = "post-commits:" + repository + ":" + branch + ":" + sourcePath;
+              var cached = null;
+
+              try {
+                cached = JSON.parse(window.sessionStorage.getItem(cacheKey));
+              } catch (error) {
+                cached = null;
+              }
+
+              function formatShanghaiTime(value) {
+                var date = new Date(value);
+                var parts = new Intl.DateTimeFormat("zh-CN", {
+                  timeZone: "Asia/Shanghai",
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false
+                }).formatToParts(date).reduce(function (result, part) {
+                  result[part.type] = part.value;
+                  return result;
+                }, {});
+
+                return parts.year + "-" + parts.month + "-" + parts.day + " " + parts.hour + ":" + parts.minute;
+              }
+
+              function updateTimeNodes(times) {
+                if (!times || !times.created || !times.updated) {
+                  return;
+                }
+
+                createdNode.textContent = formatShanghaiTime(times.created);
+                createdNode.setAttribute("datetime", new Date(times.created).toISOString());
+                updatedNode.textContent = formatShanghaiTime(times.updated);
+                updatedNode.setAttribute("datetime", new Date(times.updated).toISOString());
+
+                var modifiedMeta = document.querySelector('meta[itemprop="dateModified"]');
+                if (!modifiedMeta) {
+                  modifiedMeta = document.createElement("meta");
+                  modifiedMeta.setAttribute("itemprop", "dateModified");
+                  var article = document.querySelector("article.page");
+                  if (article) {
+                    article.appendChild(modifiedMeta);
+                  }
+                }
+                modifiedMeta.setAttribute("content", new Date(times.updated).toISOString());
+
+                var articleModifiedMeta = document.querySelector('meta[property="article:modified_time"]');
+                if (articleModifiedMeta) {
+                  articleModifiedMeta.setAttribute("content", new Date(times.updated).toISOString());
+                }
+              }
+
+              async function fetchCommitTimes() {
+                var latestUrl = new URL("https://api.github.com/repos/" + repository + "/commits");
+                latestUrl.search = new URLSearchParams({
+                  path: sourcePath,
+                  sha: branch,
+                  per_page: "1"
+                }).toString();
+
+                var latestResponse = await fetch(latestUrl.toString(), {
+                  headers: { "Accept": "application/vnd.github+json" }
+                });
+                if (!latestResponse.ok) {
+                  throw new Error("GitHub commits request failed");
+                }
+
+                var latestCommits = await latestResponse.json();
+                if (!latestCommits.length) {
+                  throw new Error("No commits found for post");
+                }
+
+                var latestCommit = latestCommits[0];
+                var oldestCommit = latestCommit;
+                var linkHeader = latestResponse.headers.get("Link") || "";
+                var lastPageMatch = linkHeader.match(/<([^>]+)>;\s*rel="last"/);
+
+                if (lastPageMatch) {
+                  var oldestResponse = await fetch(lastPageMatch[1], {
+                    headers: { "Accept": "application/vnd.github+json" }
+                  });
+                  if (oldestResponse.ok) {
+                    var oldestCommits = await oldestResponse.json();
+                    if (oldestCommits.length) {
+                      oldestCommit = oldestCommits[oldestCommits.length - 1];
+                    }
+                  }
+                }
+
+                return {
+                  created: oldestCommit.commit.committer.date,
+                  updated: latestCommit.commit.committer.date
+                };
+              }
+
+              if (cached && cached.created && cached.updated) {
+                updateTimeNodes(cached);
+                return;
+              }
+
+              fetchCommitTimes().then(function (times) {
+                updateTimeNodes(times);
+                try {
+                  window.sessionStorage.setItem(cacheKey, JSON.stringify(times));
+                } catch (error) {
+                  // Ignore storage failures; timestamps are still rendered for this page view.
+                }
+              }).catch(function () {
+                updatedNode.textContent = "暂不可用";
+              });
+            })();
+          </script>
+        {% elsif page.modified %}
           <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label | default: "Published:" }}</strong> <time datetime="{{ page.modified | date: "%Y-%m-%d" }}">{{ page.modified | date: "%B %d, %Y" }}</time></p>
-        {% endif %}
-        
-        {% if page.collection == 'teaching' %}
+        {% elsif page.collection == 'teaching' %}
           <p> {{ page.type }}, <i>{{ page.venue }}</i>, {{ page.date | default: "1900-01-01" | date: "%Y" }} </p>
         {% elsif page.venue and page.date %}
           <p>Published in <i>{{ page.venue }}</i>, {{ page.date | default: "1900-01-01" | date: "%Y" }} </p>

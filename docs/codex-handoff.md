@@ -36,6 +36,28 @@ This file is the persistent project memory for future Codex pages. Read it at th
 
 ## Recent Change Log
 
+### 2026-05-21: Added blog updated timestamps
+
+Changed files:
+
+- `_layouts/single.html`: Blog posts now render both creation time and update time in the header. A client-side script queries GitHub commits for the current post source path, using the first commit as creation time and the latest commit as update time.
+- `_data/ui-text.yml`: Adds localized `updated_label` text for English, simplified Chinese, and traditional Chinese.
+- `_includes/seo.html`: Keeps static `article:modified_time` limited to `modified`; the visible post time is filled from GitHub commit data at runtime.
+- `_sass/layout/_page.scss`: Adds compact responsive styling for post publish/update metadata.
+- `_posts/2026-05-18-tvm-relay-resnet18-beginner-guide.md`: Removes manual `last_modified_at`; no timestamp field is required.
+- `_posts/2026-05-15-tvm-custom-operator-layernorm.md`: Removes manual `last_modified_at`; no timestamp field is required.
+- `LOCAL_USAGE.md`: Documents that blog creation/update times are automatically read from GitHub commit history.
+
+Purpose:
+
+- Show visible "发布时间" and "更新时间" for every blog post, formatted down to hour/minute and no seconds.
+- Avoid requiring manual timestamp fields in Markdown front matter.
+- Keep the implementation GitHub Pages compatible without adding a custom Jekyll plugin.
+
+Operational note:
+
+- Future posts do not need `last_modified_at`. The visible timestamps are based on remote GitHub commit history for each post file, not local file save time.
+
 ### 2026-05-21: Restyled related posts on blog pages
 
 Changed files:
