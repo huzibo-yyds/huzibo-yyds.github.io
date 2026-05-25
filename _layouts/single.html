@@ -35,16 +35,16 @@ layout: default
             <p class="page__meta"><i class="fa fa-clock" aria-hidden="true"></i> {% include read-time.html %}</p>
           {% endif %}
         {% if page.collection == 'posts' and page.date %}
-          <p class="page__date page__date--post" data-post-timestamps data-repository="{{ site.repository }}" data-source-path="{{ page.path }}" data-branch="{{ site.github.source.branch | default: "master" }}">
-            <span>
-              <strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label | default: "Published:" }}</strong>
+          <div class="post-date-meta" data-post-timestamps data-repository="{{ site.repository }}" data-source-path="{{ page.path }}" data-branch="{{ site.github.source.branch | default: "master" }}">
+            <span class="post-date-meta__item">
+              <strong class="post-date-meta__label"><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label | default: "Published:" }}</strong>
               <time data-post-created datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%Y-%m-%d %H:%M" }}</time>
             </span>
-            <span>
-              <strong><i class="fa fa-fw fa-clock" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].updated_label | default: "Updated:" }}</strong>
-              <time data-post-updated{% if page.modified %} datetime="{{ page.modified | date_to_xmlschema }}"{% endif %}>{% if page.modified %}{{ page.modified | date: "%Y-%m-%d %H:%M" }}{% else %}自动获取中{% endif %}</time>
+            <span class="post-date-meta__item">
+              <strong class="post-date-meta__label"><i class="fa fa-fw fa-clock" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].updated_label | default: "Updated:" }}</strong>
+              <time data-post-updated datetime="{{ page.modified | default: page.date | date_to_xmlschema }}">{{ page.modified | default: page.date | date: "%Y-%m-%d %H:%M" }}</time>
             </span>
-          </p>
+          </div>
           <script>
             (function () {
               var container = document.currentScript.previousElementSibling;
@@ -172,7 +172,7 @@ layout: default
                   // Ignore storage failures; timestamps are still rendered for this page view.
                 }
               }).catch(function () {
-                updatedNode.textContent = "暂不可用";
+                // Keep the rendered fallback time if GitHub's commits API is unavailable.
               });
             })();
           </script>

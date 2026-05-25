@@ -466,18 +466,45 @@
   text-transform: uppercase;
 }
 
-.page__date--post {
+.post-date-meta {
+  clear: both;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  float: none;
   gap: 0.45em 1.2em;
-  margin-top: 0.75em;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.75em 0 1.25em;
   color: var(--global-text-color-light);
+  font-family: $sans-serif;
   font-size: $type-size-6;
+  line-height: 1.5;
+  text-align: left;
+}
 
-  span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.2em;
+.post-date-meta__item,
+.post-date-meta__label,
+.post-date-meta time {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.post-date-meta__item {
+  gap: 0.25em;
+}
+
+.post-date-meta__label {
+  gap: 0.15em;
+}
+
+@include breakpoint(max-width $small) {
+  .post-date-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25em;
   }
 }
 

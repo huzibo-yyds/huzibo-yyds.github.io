@@ -36,6 +36,26 @@ This file is the persistent project memory for future Codex pages. Read it at th
 
 ## Recent Change Log
 
+### 2026-05-25: Fixed blog timestamp header layout
+
+Changed files:
+
+- `_layouts/single.html`: Replaces the post timestamp wrapper's theme `page__date` classes with a dedicated `post-date-meta` component, and uses the post date as a visible fallback for update time while GitHub commit data loads.
+- `_sass/layout/_page.scss`: Adds standalone timestamp layout rules with full-width placement, cleared floats, no internal label/time wrapping, and a mobile stacked layout.
+- `docs/codex-handoff.md`: Records this fix.
+
+Purpose:
+
+- Fix deployed blog pages where "发布时间" and "更新时间" could be squeezed into a narrow right-side column and wrap vertically.
+- Avoid showing "自动获取中" as a persistent or slow-network visible state; the GitHub commits API still replaces the fallback when available.
+
+Validation:
+
+- Ran `/opt/homebrew/opt/ruby/bin/bundle exec jekyll build` successfully.
+- Verified generated `_site` HTML uses `.post-date-meta` and generated CSS contains the new rules.
+- Confirmed the GitHub commits API returns commit data for `_posts/2026-05-18-tvm-relay-resnet18-beginner-guide.md`.
+- Note: local Jekyll pages currently load CSS from the configured production `url`, so browser preview may show the old deployed CSS until the new CSS is pushed.
+
 ### 2026-05-21: Added blog updated timestamps
 
 Changed files:
