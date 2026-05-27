@@ -8,37 +8,71 @@ tags:
   - Attention
   - Decoder-only
   - AI
+excerpt: "从 next-token prediction 出发，由浅入深理解 Decoder-only LLM 的整体结构、Transformer Block、Self-Attention、FFN、KV Cache 与常见组件。"
+toc_label: "目录"
+toc_items:
+  - title: "LLM 最外层在做什么"
+    id: "what-llm-does"
+  - title: "从文本到向量"
+    id: "text-to-vector"
+  - title: "文本先变成 token ids"
+    id: "token-ids"
+    level: 3
+  - title: "Embedding：token id 变成向量"
+    id: "embedding"
+    level: 3
+  - title: "多层 Transformer Block"
+    id: "transformer-blocks"
+  - title: "一个 Transformer Block 的内部"
+    id: "inside-transformer-block"
+    level: 3
+  - title: "attention 模块"
+    id: "attention-module"
+    level: 3
+  - title: "FFN 模块"
+    id: "ffn-module"
+    level: 3
+  - title: "涉及算子"
+    id: "operators"
+    level: 3
+  - title: "Self-Attention：token 之间互相看"
+    id: "self-attention"
+  - title: "Multi-Head：拆成多个注意力头"
+    id: "multi-head"
+    level: 3
+  - title: "Attention 分数、Mask 和 Softmax"
+    id: "attention-score-mask-softmax"
+    level: 3
+  - title: "用注意力权重汇总 Value"
+    id: "weighted-value"
+    level: 3
+  - title: "FFN / MLP：加工每个 token 自己"
+    id: "ffn-mlp"
+  - title: "Norm 和 Residual 的作用"
+    id: "norm-residual"
+  - title: "Final Norm、lm_head 和 logits"
+    id: "final-norm-lm-head-logits"
+  - title: "采样下一个 token"
+    id: "sample-next-token"
+  - title: "推理时的 KV Cache"
+    id: "kv-cache"
+  - title: "整体伪代码"
+    id: "pseudo-code"
+  - title: "进一步"
+    id: "further-reading"
+  - title: "参考资源"
+    id: "references"
+    level: 3
+  - title: "论文和现代组件"
+    id: "papers-modern-components"
+    level: 3
 ---
-
-# LLM 结构解析
 
 🤖 不纠结每个算子的实现细节，而是从“一个 LLM 如何从文本生成下一个 token”开始，由浅入深看完整结构。LLaMA、Mistral、Qwen、Gemma、GPT 类模型都可以先按这个框架理解。
 
 > 以 LLaMA 类 Decoder-only LLM 为例
 
-## 目录
-
-- [1. LLM 最外层在做什么](#1-llm-最外层在做什么)
-- [2. 从文本到向量](#2-从文本到向量)
-  - [2.1 文本先变成 token ids](#21-文本先变成-token-ids)
-  - [2.2 Embedding：token id 变成向量](#22-embeddingtoken-id-变成向量)
-- [3. 多层 Transformer Block](#3-多层-transformer-block)
-  - [3.1 一个 Transformer Block 的内部](#31-一个-transformer-block-的内部)
-  - [3.2 attention模块](#32-attention模块)
-  - [3.3 FNN模块](#33-fnn模块)
-  - [3.4 涉及算子](#34-涉及算子)
-- [4. Self-Attention：token 之间互相看](#4-self-attentiontoken-之间互相看)
-  - [4.1 Multi-Head：拆成多个注意力头](#41-multi-head拆成多个注意力头)
-  - [4.2 Attention 分数、Mask 和 Softmax](#42-attention-分数mask-和-softmax)
-  - [4.3 用注意力权重汇总 Value](#43-用注意力权重汇总-value)
-- [5. FFN / MLP：加工每个 token 自己](#5-ffn--mlp加工每个-token-自己)
-- [6. Norm 和 Residual 的作用](#6-norm-和-residual-的作用)
-- [7. Final Norm、lm_head 和 logits](#7-final-normlm_head-和-logits)
-- [8. 采样下一个 token](#8-采样下一个-token)
-- [9. 推理时的 KV Cache](#9-推理时的-kv-cache)
-- [10. 整体伪代码](#10-整体伪代码)
-
-## 1. LLM 最外层在做什么
+## 1. LLM 最外层在做什么 {#what-llm-does}
 LLM 本质上是一个 next-token predictor：
 ```text
 给定前面的 token，预测下一个 token。
@@ -55,16 +89,16 @@ LLM 本质上是一个 next-token predictor：
 ```
 这些分数叫 `logits`。模型会通过 greedy、top-k、top-p 等策略选出下一个 token，比如选出“好”，再把它拼回输入，继续预测后面的 token。
 
-## 2. 从文本到向量
+## 2. 从文本到向量 {#text-to-vector}
 
-### 2.1 文本先变成 token ids
+### 2.1 文本先变成 token ids {#token-ids}
 模型不能直接处理字符串，要先经过 **tokenizer**：
 ```text
 "Hello world" -> [15496, 995]
 ```
 这些整数是 token 在词表里的编号。注意：编号大小本身没有语义，`15496` 并不表示它比 `995` “更大”或“更重要”，它只是词表中的位置。
 
-### 2.2 Embedding：token id 变成向量
+### 2.2 Embedding：token id 变成向量 {#embedding}
 📌 将token从离散符号 -> 连续向量
 
 模型有一张**可训练的 embedding table**：
@@ -96,7 +130,7 @@ hidden.shape = [seq_len, hidden_size]
 Embedding / Gather
 ```
 
-## 3. 多层 Transformer Block
+## 3. 多层 Transformer Block {#transformer-blocks}
 Embedding 之后，hidden 会进入很多层 Transformer block：
 ```python
 hidden = embedding(token_ids)
@@ -119,7 +153,7 @@ head_dim = 128       // attention head 的向量维度（hidden_size = num_head
 - 浅层可能更偏局部、词形、短语模式；
 - 深层会逐渐形成更抽象的语义和任务相关表示。
 
-### 3.1 一个 Transformer Block 的内部
+### 3.1 一个 Transformer Block 的内部 {#inside-transformer-block}
 现代 LLaMA 类模型通常使用 Pre-Norm 结构：
 ```text
 输入 hidden
@@ -146,7 +180,7 @@ hidden = hidden + ffn(rms_norm(hidden))             # FFN
 - `RMSNorm / LayerNorm`：稳定数值尺度。
 - `Residual Add`：保留原始信息，并帮助梯度传播。
 
-### 3.2 attention模块
+### 3.2 attention模块 {#attention-module}
 > 负责 token 和 token 之间的信息交互
 ```
 hidden
@@ -172,7 +206,7 @@ hidden = hidden + attn_out
     - 残差链接，不是直接用 attention 的输出替换 hidden
     - 视觉上，原来的信息保留，attention学到的信息作为增量补充上去
 
-### 3.3 FNN模块
+### 3.3 FNN模块 {#ffn-module}
 > 对每个 token 内部表示做加工、变换、提炼
 ```
 hidden
@@ -214,7 +248,7 @@ FFN 的输入输出 shape 也保持一致：
 ```
 
 💡 FNN承载了LLM大部分参数 （2/3）
-### 3.4 涉及算子
+### 3.4 涉及算子 {#operators}
 ```
 RMSNorm:
 Mean / Multiply / Rsqrt / Multiply
@@ -234,7 +268,7 @@ Reshape / Transpose / Concatenate
 
 ---
 
-## 4. Self-Attention：token 之间互相看
+## 4. Self-Attention：token 之间互相看 {#self-attention}
 Self-Attention 解决的问题是：
 ```text
 当前 token 应该关注前文中的哪些 token？
@@ -266,7 +300,7 @@ V: Value，其他 token 真正携带的内容
 Linear / MatMul / GEMM
 ```
 
-### 4.1 Multi-Head：拆成多个注意力头
+### 4.1 Multi-Head：拆成多个注意力头 {#multi-head}
 
 假设：
 ```text
@@ -296,7 +330,7 @@ head_dim = 128
 Reshape / Transpose
 ```
 
-### 4.2 Attention 分数、Mask 和 Softmax
+### 4.2 Attention 分数、Mask 和 Softmax {#attention-score-mask-softmax}
 每个 token 的 Q 会和所有 token 的 K 做点积：
 ```python
 scores = Q @ K.T / sqrt(head_dim)
@@ -337,7 +371,7 @@ attn_prob = softmax(scores)
 BatchMatMul / Scale / Where / Softmax
 ```
 
-### 4.3 用注意力权重汇总 Value
+### 4.3 用注意力权重汇总 Value {#weighted-value}
 拿到 attention probability 后，用它对 V 做加权求和：（attn_prob是当前token 的Q 与其他算子的K点积的结果
 ```python
 context = attn_prob @ V
@@ -361,7 +395,7 @@ BatchMatMul / Transpose / Reshape / Linear
 
 ---
 
-## 5. FFN / MLP：加工每个 token 自己
+## 5. FFN / MLP：加工每个 token 自己 {#ffn-mlp}
 Attention 负责 token 之间的信息交互；FFN 负责对每个 token 自己的 hidden 向量做非线性变换。
 经典 FFN：
 ```python
@@ -394,7 +428,7 @@ hidden
 Linear / SiLU / Multiply / Linear
 ```
 
-## 6. Norm 和 Residual 的作用
+## 6. Norm 和 Residual 的作用 {#norm-residual}
 Transformer block 中反复出现：
 ```python
 hidden = hidden + module(norm(hidden))
@@ -418,7 +452,7 @@ hidden = hidden + module_output
 RMSNorm / LayerNorm / Add
 ```
 
-## 7. Final Norm、lm_head 和 logits
+## 7. Final Norm、lm_head 和 logits {#final-norm-lm-head-logits}
 ⭐️ 把hidden 向量变成“每个词的分数”
 
 所有 Transformer block 结束后，通常还有一个 final norm：
@@ -453,7 +487,7 @@ next_logits = logits[-1]
 RMSNorm / LayerNorm / MatMul / Linear
 ```
 
-## 8. 采样下一个 token
+## 8. 采样下一个 token {#sample-next-token}
 🚀 如何生成新的token
 
 `logits` 是每个 token 的未归一化分数。可以先做 softmax：
@@ -473,7 +507,7 @@ top-p: 从累计概率达到 p 的候选集合中采样
 Softmax / Argmax / TopK / Sort / Cumsum / Multinomial
 ```
 
-## 9. 推理时的 KV Cache
+## 9. 推理时的 KV Cache {#kv-cache}
 如果每生成一个 token 都重新计算所有历史 token 的 K/V，会非常慢。⭐️ KV Cache 的思想是：
 ```text
 第 1 步：算 K1, V1，存起来
@@ -499,7 +533,7 @@ KV Cache 是 LLM 推理加速的关键之一。
 - 代价，显存占用
     - 粗略的大小估计
           `num_layers * 2(K/V) * batch * num_heads * seq_len * head_dim * dtype_size`
-## 10. 整体伪代码
+## 10. 整体伪代码 {#pseudo-code}
 把上面的结构串起来，一个 LLaMA 类模型可以简化成：
 ```python
 hidden = embedding(token_ids)
@@ -526,9 +560,9 @@ Attention 负责 token 之间通信，FFN 负责单个 token 内部加工。
 ```
 
 
-## 进一步
+## 进一步 {#further-reading}
 
-### 参考资源
+### 参考资源 {#references}
 | 顺序  | 资源                                                                                                                                          | 适合看什么                                                                                                                                                                                                                                                                                            |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 1   | [![](https://poloclub.github.io/favicon.ico)Transformer Explainer](https://poloclub.github.io/transformer-explainer/)                       | 最适合入门。它用 GPT-2 小模型可视化 Embedding、Q/K/V、Attention、MLP、logits、temperature、top-k/top-p，和我们 MD 里的结构非常对应。页面明确把 Transformer 拆成 Embedding、Transformer Block、Output Probabilities 三块。([![](https://poloclub.github.io/favicon.ico)poloclub.github.io](https://poloclub.github.io/transformer-explainer/)) |
@@ -542,7 +576,7 @@ Attention 负责 token 之间通信，FFN 负责单个 token 内部加工。
 | 9   | [动手学深度学习：注意力机制与 Transformer](https://zh-v2.d2l.ai/d2l-zh.pdf)                                                                               | 中文体系化教材。适合补基础：注意力机制、多头注意力、Transformer、训练和优化。([zh-v2.d2l.ai](https://zh-v2.d2l.ai/d2l-zh.pdf?utm_source=openai))                                                                                                                                                                                  |
 
 
-### 论文和现代组件
+### 论文和现代组件 {#papers-modern-components}
 
 | 资源                                                                                                                         | 建议怎么看                                                                                                                                                                                                                 |
 | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
