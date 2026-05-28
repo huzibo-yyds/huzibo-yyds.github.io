@@ -38,6 +38,27 @@ This file is the persistent project memory for future Codex pages. Read it at th
 
 ## Recent Change Log
 
+### 2026-05-28: Added ResNet18 Relay IR structure blog
+
+Changed files:
+
+- `_posts/2026-05-28-resnet18-relay-ir-structure.md`: New blog post converted from the user's Obsidian note about reading ResNet18 from TVM Relay IR, with front matter, excerpt, explicit heading anchors, Mermaid diagrams, and a `toc_items` outline for the custom post TOC.
+- `_pages/about.md`: Updates the "阅读最新文章" button and recent timeline to link to the new ResNet18 Relay IR article.
+- `docs/codex-handoff.md`: Records this publication work.
+
+Purpose:
+
+- Publish a polished article titled "ResNet18 结构详解：如何阅读 TVM Relay IR" at `/posts/2026/05/resnet18-relay-ir-structure/`.
+- Keep the blog's right-side outline behavior consistent by ensuring each TOC item maps to an explicit `##` or `###` heading id.
+
+Validation:
+
+- Ran `git diff --check` successfully.
+- Parsed Markdown front matter for posts/pages successfully.
+- Verified the new post has 27 TOC entries and 27 matching heading anchors with no missing or extra ids.
+- Ran `/opt/homebrew/opt/ruby/bin/bundle exec jekyll build` successfully.
+- Confirmed generated HTML includes the new post, homepage link, and TOC entries.
+
 ### 2026-05-25: Fixed blog timestamp header layout
 
 Changed files:
