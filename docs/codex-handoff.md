@@ -27,6 +27,8 @@ This file is the persistent project memory for future Codex pages. Read it at th
 - Bundler should install dependencies into the project-local `vendor/bundle` path when setup is needed.
 - `LOCAL_USAGE.md` says the current shell has `node` but may not have `npm`; check before using npm scripts.
 - Docker is not currently available from the shell according to `LOCAL_USAGE.md`.
+- GitHub push failures with `Permission denied (publickey)` here were traced to SSH auth, not repo permissions: the local `id_ed25519` key exists and is offered, but GitHub rejects it unless the matching public key is added to the correct GitHub account.
+- The current SSH config routes `github.com` through `ssh.github.com:443` with a local proxy command; that path reaches GitHub successfully, so the failure happens after connection establishment.
 
 ## User Preferences
 
