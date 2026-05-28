@@ -44,6 +44,12 @@ redirect_from:
 
 <div class="home-timeline" markdown="1">
 <div class="home-timeline-item" markdown="1">
+<span>2026</span>
+
+论文 [HLS-Timer: Fine-Grained Path-Level Timing Estimation for High-Level Synthesis](/publication/2026-01-01-hls-timer) 发表于 ASP-DAC 2026。[Paper](/files/Huzibo-ASPDAC26.pdf) / [Slides](/files/slides_2026_ASPDAC_HuZiBo.pdf)
+</div>
+
+<div class="home-timeline-item" markdown="1">
 <span>2026.05</span>
 
 发布博客：[从模型导入到自定义算子：TVM 自定义 LayerNorm 全流程](/posts/2026/05/tvm-custom-operator-layernorm/)
