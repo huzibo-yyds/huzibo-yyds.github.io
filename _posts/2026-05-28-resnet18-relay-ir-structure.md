@@ -79,6 +79,8 @@ toc_items:
     id: "key-operators"
   - title: "优化前 IR 的阅读要点"
     id: "reading-tips"
+  - title: "附录：完整优化前 Relay IR"
+    id: "appendix-full-ir"
   - title: "一句话总结"
     id: "summary"
 ---
@@ -579,6 +581,98 @@ fc: 1 层
 5. 如果 `add` 的 shortcut 分支前有 `1x1 conv stride2`，就是 downsample shortcut。
 6. 这份 IR 中没有显式 `batch_norm`，不要按教科书结构强行寻找 BN 节点。
 
-## 11. 一句话总结 {#summary}
+## 11. 附录：完整优化前 Relay IR {#appendix-full-ir}
+
+下面保留本文解析对应的完整优化前 Relay IR。阅读时可以先沿着 `%0 -> %68` 的变量链看主干，再回头专门找 `add` 节点，它们就是残差块的汇合点。
+
+<details markdown="1">
+<summary>展开完整 IR BEFORE Optimization</summary>
+
+```text
+=== IR BEFORE Optimization ===
+def @main(%x: Tensor[(1, 3, 224, 224), float32] /* ty=Tensor[(1, 3, 224, 224), float32] span=/conv1/Conv.x:0:0 */) -> Tensor[(1, 1000), float32] {
+  %0 = nn.conv2d(
+  %x,
+  meta[relay.Constant][0] /* ty=Tensor[(64, 3, 7, 7), float32] span=/conv1/Conv.onnx::Conv_193:0:0 */,
+  strides=[2, 2],
+  padding=[3, 3, 3, 3],
+  channels=64,
+  kernel_size=[7, 7]) /* ty=Tensor[(1, 64, 112, 112), float32] span=/conv1/Conv:0:0 */;
+
+  %1 = nn.bias_add(%0, meta[relay.Constant][1] /* ty=Tensor[(64), float32] span=/conv1/Conv.onnx::Conv_194:0:0 */) /* ty=Tensor[(1, 64, 112, 112), float32] span=/conv1/Conv:0:0 */;
+  %2 = nn.relu(%1) /* ty=Tensor[(1, 64, 112, 112), float32] span=/act1/Relu:0:0 */;
+  %3 = nn.max_pool2d(%2, pool_size=[3, 3], strides=[2, 2], padding=[1, 1, 1, 1]) /* ty=Tensor[(1, 64, 56, 56), float32] span=/maxpool/MaxPool:0:0 */;
+  %4 = nn.conv2d(%3, meta[relay.Constant][2] /* ty=Tensor[(64, 64, 3, 3), float32] span=/layer1/layer1.0/conv1/Conv.onnx::Conv_196:0:0 */, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.0/conv1/Conv:0:0 */;
+  %5 = nn.bias_add(%4, meta[relay.Constant][3] /* ty=Tensor[(64), float32] span=/layer1/layer1.0/conv1/Conv.onnx::Conv_197:0:0 */) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.0/conv1/Conv:0:0 */;
+  %6 = nn.relu(%5) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.0/act1/Relu:0:0 */;
+  %7 = nn.conv2d(%6, meta[relay.Constant][4] /* ty=Tensor[(64, 64, 3, 3), float32] span=/layer1/layer1.0/conv2/Conv.onnx::Conv_199:0:0 */, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.0/conv2/Conv:0:0 */;
+  %8 = nn.bias_add(%7, meta[relay.Constant][5] /* ty=Tensor[(64), float32] span=/layer1/layer1.0/conv2/Conv.onnx::Conv_200:0:0 */) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.0/conv2/Conv:0:0 */;
+  %9 = add(%8, %3) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.0/Add:0:0 */;
+  %10 = nn.relu(%9) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.0/act2/Relu:0:0 */;
+  %11 = nn.conv2d(%10, meta[relay.Constant][6] /* ty=Tensor[(64, 64, 3, 3), float32] span=/layer1/layer1.1/conv1/Conv.onnx::Conv_202:0:0 */, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.1/conv1/Conv:0:0 */;
+  %12 = nn.bias_add(%11, meta[relay.Constant][7] /* ty=Tensor[(64), float32] span=/layer1/layer1.1/conv1/Conv.onnx::Conv_203:0:0 */) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.1/conv1/Conv:0:0 */;
+  %13 = nn.relu(%12) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.1/act1/Relu:0:0 */;
+  %14 = nn.conv2d(%13, meta[relay.Constant][8] /* ty=Tensor[(64, 64, 3, 3), float32] span=/layer1/layer1.1/conv2/Conv.onnx::Conv_205:0:0 */, padding=[1, 1, 1, 1], channels=64, kernel_size=[3, 3]) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.1/conv2/Conv:0:0 */;
+  %15 = nn.bias_add(%14, meta[relay.Constant][9] /* ty=Tensor[(64), float32] span=/layer1/layer1.1/conv2/Conv.onnx::Conv_206:0:0 */) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.1/conv2/Conv:0:0 */;
+  %16 = add(%15, %10) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.1/Add:0:0 */;
+  %17 = nn.relu(%16) /* ty=Tensor[(1, 64, 56, 56), float32] span=/layer1/layer1.1/act2/Relu:0:0 */;
+  %18 = nn.conv2d(%17, meta[relay.Constant][10] /* ty=Tensor[(128, 64, 3, 3), float32] span=/layer2/layer2.0/conv1/Conv.onnx::Conv_208:0:0 */, strides=[2, 2], padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/conv1/Conv:0:0 */;
+  %19 = nn.bias_add(%18, meta[relay.Constant][11] /* ty=Tensor[(128), float32] span=/layer2/layer2.0/conv1/Conv.onnx::Conv_209:0:0 */) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/conv1/Conv:0:0 */;
+  %20 = nn.relu(%19) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/act1/Relu:0:0 */;
+  %21 = nn.conv2d(%20, meta[relay.Constant][12] /* ty=Tensor[(128, 128, 3, 3), float32] span=/layer2/layer2.0/conv2/Conv.onnx::Conv_211:0:0 */, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/conv2/Conv:0:0 */;
+  %22 = nn.conv2d(%17, meta[relay.Constant][14] /* ty=Tensor[(128, 64, 1, 1), float32] span=/layer2/layer2.0/downsample/downsample.0/Conv.onnx::Conv_214:0:0 */, strides=[2, 2], padding=[0, 0, 0, 0], channels=128, kernel_size=[1, 1]) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/downsample/downsample.0/Conv:0:0 */;
+  %23 = nn.bias_add(%21, meta[relay.Constant][13] /* ty=Tensor[(128), float32] span=/layer2/layer2.0/conv2/Conv.onnx::Conv_212:0:0 */) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/conv2/Conv:0:0 */;
+  %24 = nn.bias_add(%22, meta[relay.Constant][15] /* ty=Tensor[(128), float32] span=/layer2/layer2.0/downsample/downsample.0/Conv.onnx::Conv_215:0:0 */) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/downsample/downsample.0/Conv:0:0 */;
+  %25 = add(%23, %24) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/Add:0:0 */;
+  %26 = nn.relu(%25) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.0/act2/Relu:0:0 */;
+  %27 = nn.conv2d(%26, meta[relay.Constant][16] /* ty=Tensor[(128, 128, 3, 3), float32] span=/layer2/layer2.1/conv1/Conv.onnx::Conv_217:0:0 */, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.1/conv1/Conv:0:0 */;
+  %28 = nn.bias_add(%27, meta[relay.Constant][17] /* ty=Tensor[(128), float32] span=/layer2/layer2.1/conv1/Conv.onnx::Conv_218:0:0 */) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.1/conv1/Conv:0:0 */;
+  %29 = nn.relu(%28) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.1/act1/Relu:0:0 */;
+  %30 = nn.conv2d(%29, meta[relay.Constant][18] /* ty=Tensor[(128, 128, 3, 3), float32] span=/layer2/layer2.1/conv2/Conv.onnx::Conv_220:0:0 */, padding=[1, 1, 1, 1], channels=128, kernel_size=[3, 3]) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.1/conv2/Conv:0:0 */;
+  %31 = nn.bias_add(%30, meta[relay.Constant][19] /* ty=Tensor[(128), float32] span=/layer2/layer2.1/conv2/Conv.onnx::Conv_221:0:0 */) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.1/conv2/Conv:0:0 */;
+  %32 = add(%31, %26) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.1/Add:0:0 */;
+  %33 = nn.relu(%32) /* ty=Tensor[(1, 128, 28, 28), float32] span=/layer2/layer2.1/act2/Relu:0:0 */;
+  %34 = nn.conv2d(%33, meta[relay.Constant][20] /* ty=Tensor[(256, 128, 3, 3), float32] span=/layer3/layer3.0/conv1/Conv.onnx::Conv_223:0:0 */, strides=[2, 2], padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/conv1/Conv:0:0 */;
+  %35 = nn.bias_add(%34, meta[relay.Constant][21] /* ty=Tensor[(256), float32] span=/layer3/layer3.0/conv1/Conv.onnx::Conv_224:0:0 */) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/conv1/Conv:0:0 */;
+  %36 = nn.relu(%35) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/act1/Relu:0:0 */;
+  %37 = nn.conv2d(%36, meta[relay.Constant][22] /* ty=Tensor[(256, 256, 3, 3), float32] span=/layer3/layer3.0/conv2/Conv.onnx::Conv_226:0:0 */, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/conv2/Conv:0:0 */;
+  %38 = nn.conv2d(%33, meta[relay.Constant][24] /* ty=Tensor[(256, 128, 1, 1), float32] span=/layer3/layer3.0/downsample/downsample.0/Conv.onnx::Conv_229:0:0 */, strides=[2, 2], padding=[0, 0, 0, 0], channels=256, kernel_size=[1, 1]) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/downsample/downsample.0/Conv:0:0 */;
+  %39 = nn.bias_add(%37, meta[relay.Constant][23] /* ty=Tensor[(256), float32] span=/layer3/layer3.0/conv2/Conv.onnx::Conv_227:0:0 */) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/conv2/Conv:0:0 */;
+  %40 = nn.bias_add(%38, meta[relay.Constant][25] /* ty=Tensor[(256), float32] span=/layer3/layer3.0/downsample/downsample.0/Conv.onnx::Conv_230:0:0 */) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/downsample/downsample.0/Conv:0:0 */;
+  %41 = add(%39, %40) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/Add:0:0 */;
+  %42 = nn.relu(%41) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.0/act2/Relu:0:0 */;
+  %43 = nn.conv2d(%42, meta[relay.Constant][26] /* ty=Tensor[(256, 256, 3, 3), float32] span=/layer3/layer3.1/conv1/Conv.onnx::Conv_232:0:0 */, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.1/conv1/Conv:0:0 */;
+  %44 = nn.bias_add(%43, meta[relay.Constant][27] /* ty=Tensor[(256), float32] span=/layer3/layer3.1/conv1/Conv.onnx::Conv_233:0:0 */) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.1/conv1/Conv:0:0 */;
+  %45 = nn.relu(%44) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.1/act1/Relu:0:0 */;
+  %46 = nn.conv2d(%45, meta[relay.Constant][28] /* ty=Tensor[(256, 256, 3, 3), float32] span=/layer3/layer3.1/conv2/Conv.onnx::Conv_235:0:0 */, padding=[1, 1, 1, 1], channels=256, kernel_size=[3, 3]) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.1/conv2/Conv:0:0 */;
+  %47 = nn.bias_add(%46, meta[relay.Constant][29] /* ty=Tensor[(256), float32] span=/layer3/layer3.1/conv2/Conv.onnx::Conv_236:0:0 */) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.1/conv2/Conv:0:0 */;
+  %48 = add(%47, %42) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.1/Add:0:0 */;
+  %49 = nn.relu(%48) /* ty=Tensor[(1, 256, 14, 14), float32] span=/layer3/layer3.1/act2/Relu:0:0 */;
+  %50 = nn.conv2d(%49, meta[relay.Constant][30] /* ty=Tensor[(512, 256, 3, 3), float32] span=/layer4/layer4.0/conv1/Conv.onnx::Conv_238:0:0 */, strides=[2, 2], padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/conv1/Conv:0:0 */;
+  %51 = nn.bias_add(%50, meta[relay.Constant][31] /* ty=Tensor[(512), float32] span=/layer4/layer4.0/conv1/Conv.onnx::Conv_239:0:0 */) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/conv1/Conv:0:0 */;
+  %52 = nn.relu(%51) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/act1/Relu:0:0 */;
+  %53 = nn.conv2d(%52, meta[relay.Constant][32] /* ty=Tensor[(512, 512, 3, 3), float32] span=/layer4/layer4.0/conv2/Conv.onnx::Conv_241:0:0 */, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/conv2/Conv:0:0 */;
+  %54 = nn.conv2d(%49, meta[relay.Constant][34] /* ty=Tensor[(512, 256, 1, 1), float32] span=/layer4/layer4.0/downsample/downsample.0/Conv.onnx::Conv_244:0:0 */, strides=[2, 2], padding=[0, 0, 0, 0], channels=512, kernel_size=[1, 1]) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/downsample/downsample.0/Conv:0:0 */;
+  %55 = nn.bias_add(%53, meta[relay.Constant][33] /* ty=Tensor[(512), float32] span=/layer4/layer4.0/conv2/Conv.onnx::Conv_242:0:0 */) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/conv2/Conv:0:0 */;
+  %56 = nn.bias_add(%54, meta[relay.Constant][35] /* ty=Tensor[(512), float32] span=/layer4/layer4.0/downsample/downsample.0/Conv.onnx::Conv_245:0:0 */) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/downsample/downsample.0/Conv:0:0 */;
+  %57 = add(%55, %56) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/Add:0:0 */;
+  %58 = nn.relu(%57) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.0/act2/Relu:0:0 */;
+  %59 = nn.conv2d(%58, meta[relay.Constant][36] /* ty=Tensor[(512, 512, 3, 3), float32] span=/layer4/layer4.1/conv1/Conv.onnx::Conv_247:0:0 */, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.1/conv1/Conv:0:0 */;
+  %60 = nn.bias_add(%59, meta[relay.Constant][37] /* ty=Tensor[(512), float32] span=/layer4/layer4.1/conv1/Conv.onnx::Conv_248:0:0 */) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.1/conv1/Conv:0:0 */;
+  %61 = nn.relu(%60) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.1/act1/Relu:0:0 */;
+  %62 = nn.conv2d(%61, meta[relay.Constant][38] /* ty=Tensor[(512, 512, 3, 3), float32] span=/layer4/layer4.1/conv2/Conv.onnx::Conv_250:0:0 */, padding=[1, 1, 1, 1], channels=512, kernel_size=[3, 3]) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.1/conv2/Conv:0:0 */;
+  %63 = nn.bias_add(%62, meta[relay.Constant][39] /* ty=Tensor[(512), float32] span=/layer4/layer4.1/conv2/Conv.onnx::Conv_251:0:0 */) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.1/conv2/Conv:0:0 */;
+  %64 = add(%63, %58) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.1/Add:0:0 */;
+  %65 = nn.relu(%64) /* ty=Tensor[(1, 512, 7, 7), float32] span=/layer4/layer4.1/act2/Relu:0:0 */;
+  %66 = nn.global_avg_pool2d(%65) /* ty=Tensor[(1, 512, 1, 1), float32] span=/global_pool/pool/GlobalAveragePool:0:0 */;
+  %67 = nn.batch_flatten(%66) /* ty=Tensor[(1, 512), float32] span=/global_pool/flatten/Flatten:0:0 */;
+  %68 = nn.dense(%67, meta[relay.Constant][40] /* ty=Tensor[(1000, 512), float32] span=/fc/Gemm.fc.weight:0:0 */, units=1000) /* ty=Tensor[(1, 1000), float32] span=/fc/Gemm:0:0 */;
+  add(%68, meta[relay.Constant][41] /* ty=Tensor[(1000), float32] span=/fc/Gemm.fc.bias:0:0 */) /* ty=Tensor[(1, 1000), float32] span=/fc/Gemm:0:0 */
+}
+```
+
+</details>
+
+## 12. 一句话总结 {#summary}
 
 这份优化前 Relay IR 展现的是一个清晰的 ResNet18：输入图片先经过 stem 下采样，然后依次进入 4 个 residual stage；每个 stage 有 2 个 BasicBlock；stage 的第一个 block 在 layer2/3/4 中通过 stride2 和 1x1 shortcut 完成下采样与通道扩展；最后通过全局平均池化和全连接层输出 1000 类 logits。

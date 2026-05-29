@@ -38,6 +38,25 @@ This file is the persistent project memory for future Codex pages. Read it at th
 
 ## Recent Change Log
 
+### 2026-05-29: Added full Relay IR appendix to ResNet18 blog
+
+Changed files:
+
+- `_posts/2026-05-28-resnet18-relay-ir-structure.md`: Adds a collapsible appendix containing the complete `IR BEFORE Optimization` Relay IR from `toys/resnet18/resnet18_relay.log`, plus a matching TOC item.
+- `docs/codex-handoff.md`: Records this update.
+
+Purpose:
+
+- Let readers compare the article's ResNet18/Relay explanation directly against the original Relay IR without leaving the page.
+- Keep the long IR out of the main reading flow by placing it inside a Markdown `<details>` block.
+
+Validation:
+
+- Ran `git diff --check` successfully after removing trailing whitespace from the pasted IR.
+- Verified the new post has 28 TOC entries and 28 matching heading anchors with no missing or extra ids.
+- Ran `/opt/homebrew/opt/ruby/bin/bundle exec jekyll build` successfully.
+- Confirmed generated HTML includes the appendix TOC entry, `<details>` summary, and `IR BEFORE Optimization` code block.
+
 ### 2026-05-28: Added ResNet18 Relay IR structure blog
 
 Changed files:
