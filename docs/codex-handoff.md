@@ -38,6 +38,27 @@ This file is the persistent project memory for future Codex pages. Read it at th
 
 ## Recent Change Log
 
+### 2026-06-11: Added NBU custom op te.extern blog
+
+Changed files:
+
+- `_posts/2026-06-11-tvm-nbu-custom-op-te-extern-guide.md`: New blog post converted from `/Users/huzi/Documents/Code/tvm/NBU_CUSTOM_OP_TE_EXTERN_GUIDE.md`, with front matter, excerpt, tags, explicit heading anchors, and `toc_items` for the custom right-side TOC.
+- `_pages/about.md`: Updates the "阅读最新文章" button and recent timeline to link to the new post.
+- `docs/codex-handoff.md`: Records this publication work.
+
+Purpose:
+
+- Publish "TVM 自定义算子接入：从 Relay 注册到 te.extern Runtime" at `/posts/2026/06/tvm-nbu-custom-op-te-extern-guide/`.
+- Preserve the original guide's practical flow: C++ Relay op registration, Python API wrapper, FTVMCompute/FTVMSchedule, `te.extern`, runtime PackedFunc, examples, and common errors.
+
+Validation:
+
+- Ran `git diff --check` successfully.
+- Parsed Markdown front matter for posts/pages successfully.
+- Verified the new post has 28 TOC entries and 28 matching heading anchors with no missing or extra ids.
+- Ran `/opt/homebrew/opt/ruby/bin/bundle exec jekyll build` successfully.
+- Confirmed generated HTML includes the new post, TOC entries, year archive entry, and homepage link.
+
 ### 2026-05-29: Added full Relay IR appendix to ResNet18 blog
 
 Changed files:

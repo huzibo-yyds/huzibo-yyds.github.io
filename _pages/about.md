@@ -14,7 +14,7 @@ redirect_from:
 
 <div class="home-actions">
 <a class="btn" href="/files/hu-zibo-cv-cn-202512.pdf">下载中文简历</a>
-<a class="btn" href="/posts/2026/05/resnet18-relay-ir-structure/">阅读最新文章</a>
+<a class="btn" href="/posts/2026/06/tvm-nbu-custom-op-te-extern-guide/">阅读最新文章</a>
 </div>
 </div>
 
@@ -47,6 +47,12 @@ redirect_from:
 <span>2026</span>
 
 论文 [HLS-Timer: Fine-Grained Path-Level Timing Estimation for High-Level Synthesis](/publication/2026-01-01-hls-timer) 发表于 ASP-DAC 2026。[Paper](/files/Huzibo-ASPDAC26.pdf) / [Slides](/files/slides_2026_ASPDAC_HuZiBo.pdf)
+</div>
+
+<div class="home-timeline-item" markdown="1">
+<span>2026.06</span>
+
+发布博客：[TVM 自定义算子接入：从 Relay 注册到 te.extern Runtime](/posts/2026/06/tvm-nbu-custom-op-te-extern-guide/)
 </div>
 
 <div class="home-timeline-item" markdown="1">
