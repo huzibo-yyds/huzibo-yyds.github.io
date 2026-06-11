@@ -809,8 +809,8 @@ Attribute FTVMCompute of custom.numpy_layer_norm is already registered with same
 解决：
 
 - 保证每个 op 的 compute 只注册一次。
-- 不要同时在 `tvm/relay/op/_custom.py` 和 `calcc/op/_custom.py` 注册同一个 op。
-- 避免 `python.calcc...` 和 `calcc...` 两套 import 路径混用。
+- 不要同时在 `tvm/relay/op/_custom.py` 和 `hzb/op/_custom.py` 注册同一个 op。
+- 避免 `python.hzb...` 和 `hzb...` 两套 import 路径混用。
 
 ### 11.2 Generic function already registered for xxx_strategy {#generic-function-registered}
 
@@ -937,11 +937,11 @@ input_data = input_data.transpose(0, 2, 3, 1).astype("float32")
 建议把三类代码分开：
 
 ```text
-python/calcc/op/nn.py
+python/hzb/op/nn.py
   Python Relay API wrapper:
   def fused_add_relu(...): return _make.fused_add_relu(...)
 
-python/calcc/op/_nn.py 或 _custom.py
+python/hzb/op/_nn.py 或 _custom.py
   FTVMCompute + FTVMSchedule:
   @reg.register_compute("nbu.xxx")
   te.extern(...)
@@ -956,4 +956,3 @@ toys/.../nbu_runtime.py
 `_nn.py/_custom.py` 是“relay.build 如何 lower 这个 Call”。
 
 `xx_runtime.py` 是“executor.run 如何执行 call_packed”。
-

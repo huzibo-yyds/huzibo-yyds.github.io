@@ -38,6 +38,20 @@ This file is the persistent project memory for future Codex pages. Read it at th
 
 ## Recent Change Log
 
+### 2026-06-11: Renamed package examples from calcc to hzb
+
+Changed files:
+
+- `_posts/2026-06-11-tvm-nbu-custom-op-te-extern-guide.md`: Replaces the remaining `calcc` package path examples with `hzb` in the import-path conflict note and recommended file organization section.
+- `docs/codex-handoff.md`: Records this follow-up edit.
+
+Validation:
+
+- Confirmed the target post has no remaining `calcc` occurrences.
+- Ran `git diff --check` successfully.
+- Verified the post still has 28 TOC entries and 28 matching heading anchors.
+- Ran `/opt/homebrew/opt/ruby/bin/bundle exec jekyll build` successfully.
+
 ### 2026-06-11: Added NBU custom op te.extern blog
 
 Changed files:
