@@ -40,6 +40,29 @@
 
 ## 最近修改记录
 
+### 2026-07-05：新增 Codex 开发工作流博客草稿
+
+修改文件：
+
+- `_posts/2026-07-05-codex-development-workflow.md`：从用户 Obsidian 笔记 `Codex开发.md` 整理出新博客，合并了其直接链接的 `MCP.md`、`Skills.md`、`Subagents.md`、`Hooks.md`、`Plugins.md` 的核心内容。
+- `images/blog/codex-development/`：新增博客图片资源，避免公开页面引用本地 Obsidian 路径。
+- `_pages/about.md`：更新“阅读最新文章”按钮和近期时间线，链接到新文章。
+- `docs/codex-handoff.md`：记录这次草稿工作。
+
+目的：
+
+- 生成文章《Codex 开发工作流：从 AGENTS.md 到 Skills、MCP 与 Plugins》，路径为 `/posts/2026/07/codex-development-workflow/`。
+- 按 `blog-update` Skill 流程完成本地预览，用户确认后提交并推送到 `master`。
+
+验证：
+
+- 成功运行 `git diff --check`。
+- 成功解析 Markdown front matter。
+- 验证新文章有 27 个 TOC 条目，且都有匹配的 heading anchors，没有缺失或多余 id。
+- 成功运行 `/opt/homebrew/opt/ruby/bin/bundle exec jekyll build`。
+- 通过本地 Jekyll 预览检查文章页面返回 HTTP 200，图片资源返回 HTTP 200。
+- 用户已确认本地效果，后续提交应包含新博客、首页入口、图片资源和本交接记录。
+
 ### 2026-07-03：将 Codex 上下文文件改写为中文
 
 修改文件：
