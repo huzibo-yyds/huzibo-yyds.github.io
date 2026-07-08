@@ -40,6 +40,33 @@
 
 ## 最近修改记录
 
+### 2026-07-08：改进首页入口、博客专题导航和文章阅读体验
+
+修改文件：
+
+- `_pages/about.md`：在首页首屏简介后新增“论文 / 专题 / 工具”精选入口，突出 ASP-DAC 论文、TVM / Relay 系列博客和 Codex 开发工作流。
+- `_pages/year-archive.html`：在博客归档页顶部新增专题导航，链接到 TVM / Relay、自定义算子、ResNet18、LLM、Codex / AI Agent 等 tag 视图。
+- `_includes/post-toc.html`、`_sass/layout/_page.scss`：为文章页新增移动端折叠目录，同时保留桌面端右侧 sticky 目录和当前小节高亮逻辑。
+- `_layouts/single.html`：对博客正文中的 Markdown 图片自动补 `loading="lazy"` 和 `decoding="async"`。
+- `_includes/seo.html`、`_config.yml`、`_posts/2026-07-05-codex-development-workflow.md`：扩展分享图逻辑，支持 `page.image` 和全站默认 `og_image`，并为 Codex 博客设置文章分享图。
+- `_posts/2026-06-11-tvm-nbu-custom-op-te-extern-guide.md`：将 tag `Custom Op` 统一为 `Custom Operator`，让“自定义算子”专题聚合两篇相关文章。
+- `_sass/layout/_archive.scss`：新增博客专题导航样式。
+
+目的：
+
+- 提升首页首屏的代表性成果入口密度。
+- 让博客页从纯时间线变为可按专题进入。
+- 改善长文在移动端的目录导航、图片加载性能和外部分享预览效果。
+
+验证：
+
+- 成功运行 `git diff --check`。
+- 成功运行 `/opt/homebrew/opt/ruby/bin/bundle exec jekyll build`。
+- 确认生成的首页包含 `home-featured` 精选入口。
+- 确认生成的博客归档页包含 `blog-topic-nav` 专题导航。
+- 确认 Codex 文章页包含移动端 `post-toc-mobile`、桌面端 `post-toc-sidebar`、图片 `loading="lazy"`、文章 `og:image` 和 `twitter:image`。
+- 确认 `/tag/?tag=custom-operator` 生成内容同时包含两篇自定义算子相关文章。
+
 ### 2026-07-05：新增 Codex 开发工作流博客草稿
 
 修改文件：

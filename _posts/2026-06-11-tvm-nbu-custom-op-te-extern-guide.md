@@ -6,7 +6,7 @@ tags:
   - TVM
   - Relay
   - te.extern
-  - Custom Op
+  - Custom Operator
   - Compiler
 excerpt: "从 C++ 侧 Relay 算子注册出发，整理 Python API、FTVMCompute、FTVMSchedule、te.extern、PackedFunc runtime 和常见报错的完整接入套路。"
 toc_label: "目录"

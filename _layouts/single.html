@@ -189,7 +189,11 @@ layout: default
       {% endunless %}
 
       <section class="page__content" itemprop="text">
-        {{ content }}
+        {% assign rendered_content = content %}
+        {% if page.collection == 'posts' %}
+          {% assign rendered_content = rendered_content | replace: '<img src=', '<img loading="lazy" decoding="async" src=' %}
+        {% endif %}
+        {{ rendered_content }}
 
         {% if page.citation and page.paperurl and page.slidesurl and page.bibtexurl %}
           <p style="font-size: smaller">Recommended citation: {{ page.citation }}<br /><a href="{{ page.paperurl }}">Download Paper</a> | <a href="{{ page.slidesurl }}">Download Slides</a> | <a href="{{ page.bibtexurl }}">Download Bibtex</a></p>

@@ -35,6 +35,51 @@
 }
 
 #main.post-main {
+  .post-toc-sidebar {
+    display: none;
+  }
+
+  .post-toc-mobile {
+    margin: 0 0 1.25rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--global-border-color);
+    border-radius: 6px;
+    background: var(--global-bg-color);
+
+    summary {
+      cursor: pointer;
+      color: var(--global-text-color);
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .toc {
+      margin-top: 0.75rem;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .toc__menu {
+      margin-bottom: 0;
+      font-size: 0.85rem;
+
+      a {
+        padding: 0.2rem 0 0.2rem 0.55rem;
+        color: var(--global-text-color);
+        line-height: 1.35;
+        border-left: 2px solid #3aa7c8;
+        text-decoration: none !important;
+      }
+
+      .toc__item--level-3 > a {
+        margin-left: 0.9rem;
+      }
+    }
+  }
+
   @include breakpoint($large) {
     max-width: $x-large;
 
@@ -52,9 +97,14 @@
     .sidebar__right {
       position: sticky;
       top: calc(#{$masthead-height} + 1.5rem);
+      display: block;
       float: right;
       width: 16rem;
       margin-left: 0;
+    }
+
+    .post-toc-mobile {
+      display: none;
     }
 
     .toc {
@@ -174,6 +224,44 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-top: 1.25rem;
+}
+
+.home-featured {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.85rem;
+  margin: -0.35rem 0 2rem;
+}
+
+.home-featured-item {
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--global-border-color);
+  border-radius: 6px;
+  background: var(--global-bg-color);
+
+  span {
+    display: inline-block;
+    margin-bottom: 0.45rem;
+    color: var(--global-text-color-light);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  p {
+    margin-bottom: 0.35rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+
+    &:last-child {
+      margin-bottom: 0;
+      color: var(--global-text-color-light);
+    }
+  }
+
+  a {
+    font-weight: 700;
+  }
 }
 
 .home-card-grid {

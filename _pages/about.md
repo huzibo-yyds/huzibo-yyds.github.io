@@ -18,6 +18,32 @@ redirect_from:
 </div>
 </div>
 
+<div class="home-featured" markdown="1">
+<section class="home-featured-item" markdown="1">
+<span>论文</span>
+
+[HLS-Timer: Fine-Grained Path-Level Timing Estimation for High-Level Synthesis](/publication/2026-01-01-hls-timer)
+
+[Paper](/files/Huzibo-ASPDAC26.pdf) · [Slides](/files/slides_2026_ASPDAC_HuZiBo.pdf)
+</section>
+
+<section class="home-featured-item" markdown="1">
+<span>专题</span>
+
+[TVM / Relay 系列博客](/tag/?tag=tvm)
+
+模型导入、Relay IR、自定义算子和 te.extern 接入流程。
+</section>
+
+<section class="home-featured-item" markdown="1">
+<span>工具</span>
+
+[Codex 开发工作流](/posts/2026/07/codex-development-workflow/)
+
+AGENTS.md、Skills、MCP、Subagents、Hooks 与 Plugins 的实践整理。
+</section>
+</div>
+
 ## 研究方向
 
 <div class="home-card-grid" markdown="1">

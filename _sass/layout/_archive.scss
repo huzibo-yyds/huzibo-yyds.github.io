@@ -84,6 +84,41 @@
   }
 }
 
+.blog-topic-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55em;
+  margin: 0.5em 0 1.5em;
+  padding-bottom: 1.1em;
+  border-bottom: 1px solid var(--global-border-color);
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.25em 0.7em;
+    border: 1px solid var(--global-border-color);
+    border-radius: 999px;
+    color: var(--global-text-color);
+    font-size: $type-size-6;
+    line-height: 1.25;
+    text-decoration: none !important;
+
+    &:hover {
+      color: var(--global-link-color);
+      border-color: var(--global-link-color);
+    }
+  }
+}
+
+.blog-topic-nav__label {
+  margin: 0 0.25em 0 0;
+  color: var(--global-text-color-light);
+  font-size: $type-size-6;
+  font-weight: 700;
+}
+
 
 /*
    Taxonomy archive

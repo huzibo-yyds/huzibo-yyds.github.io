@@ -10,6 +10,7 @@ tags:
   - Skills
   - Plugins
 excerpt: "整理 Codex 桌面端、CLI、项目上下文、AGENTS.md、MCP、Skills、Subagents、Hooks 与 Plugins 的使用笔记，形成一套可复用的 AI Agent 开发工作流。"
+image: /images/blog/codex-development/agents-md.png
 toc_label: "目录"
 toc_items:
   - title: "读完需要了解什么"
